@@ -32,7 +32,7 @@
     <div class="bg">
       <img :src="seller.avatar" width="100%" height="100%"/>
     </div>
-    <div v-show="detailShow"  class="detail">
+    <div v-show="detailShow" class="detail" transition="fade">
       <!--CSS Sticky Footer-->
       <div class="detail-wrap clearfix">
         <div class="detail-main">
@@ -40,9 +40,28 @@
           <div class="star-warp">
             <star :size="48" :score="seller.score"></star>
           </div>
+          <div class="title">
+            <div class="line"></div>
+            <div class="text">优惠信息</div>
+            <div class="line"></div>
+          </div>
+          <ul v-if="seller.supports"  class="support-wrap">
+            <li class="support" v-for="item in seller.supports">
+              <span :class="classMap[item.type]" class="icon"></span>
+              <span class="text">
+            {{item.description}}
+          </span>
+            </li>
+          </ul>
+          <div class="title">
+            <div class="line"></div>
+            <div class="text">商家公告</div>
+            <div class="line"></div>
+          </div>
+          <div class="bulletin-detail">{{seller.bulletin}}</div>
         </div>
       </div>
-      <div class="detail-close ">
+      <div class="detail-close" @click="closeDetail" >
         <i class="icon-close"></i>
       </div>
     </div>
@@ -62,10 +81,13 @@
     },
     data() {
       return {
-        detailShow: true
+        detailShow: false
       };
     },
     methods: {
+      closeDetail() {
+        this.detailShow = false;
+      },
       showDetail() {
         this.detailShow = true;
       }
@@ -198,13 +220,20 @@
       width: 100%
       height: 100%
       overflow: auto
-      background-color: rgba(7, 17, 27, .5)
+      backdrop-filter: blur(10px)
+      transition: all .5s
+      &.fade-transition
+        opacity: 1
+        background-color: rgba(7, 17, 27, .8)
+      &.fade-enter,&.fade-leave
+        opacity: 0
+        background-color: rgba(7, 17, 27, 0)
       .detail-wrap
         min-height: 100%
         width: 100%
         .detail-main
           margin-top: 64px
-          padding-bottom: 64px
+          padding: 0 36px 64px
           .name
             font-size 16px
             line-height: 16px
@@ -214,6 +243,53 @@
             margin-top: 16px
             padding: 2px 0
             text-align: center
+          .title
+            display: flex
+            margin: 28px auto 24px
+            .line
+              flex: 1
+              position: relative
+              top: 6px
+              border-top: 1px solid rgba(255, 255, 255, .2)
+            .text
+              margin: 0 12px
+              line-height: 14px
+              font-size: 14px
+              font-weight: 700
+              color: gba(255, 255, 255)
+          .bulletin-detail
+            padding: 0 12px
+            line-height: 28px
+            font-size 12px
+          .support-wrap
+            padding: 0 12px
+
+            .support
+              font-size: 12px
+              font-weight: 200
+              line-height: 16px
+              margin-bottom: 12px
+              &:last-child
+                margin-bottom: 0
+              .icon
+                display: inline-block
+                vertical-align: top
+                width: 16px
+                height: 16px
+                margin-right: 6px
+                background-size: 16px 16px
+                background-repeat: no-repeat
+                &.decrease
+                  bg-image('decrease_2')
+                &.discount
+                  bg-image('discount_2')
+                &.guarantee
+                  bg-image('guarantee_2')
+                &.invoice
+                  bg-image('invoice_2')
+                &.special
+                  bg-image('special_2')
+
       .detail-close
         position: relative
         width: 32px
@@ -221,4 +297,5 @@
         margin: -64px auto 0 auto
         clear: both
         font-size 32px
+        color: rgba(255, 255, 255, .5)
 </style>

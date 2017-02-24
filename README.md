@@ -1,6 +1,6 @@
-# sell
+# vue-sell
 
-> sell app
+> app spa
 
 ## Build Setup
 
