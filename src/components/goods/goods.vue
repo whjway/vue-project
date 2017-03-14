@@ -1,9 +1,11 @@
 <template>
+  {{seller.name}}
   <div class="goods">
     <!--左侧导航-->
     <div class="menu-wrap" v-el:menu-wrap>
       <ul>
-        <li v-for="item in goods" class="menu-item"  :class="{'current':currentIndex === $index}" @click.stop="selectMenu($index,$event)">
+        <li v-for="item in goods" class="menu-item" :class="{'current':currentIndex === $index}"
+            @click.stop="selectMenu($index,$event)">
           <div class="text border-1px">
             <span v-show="item.type>0" :class="classMap[item.type]" class="icon"></span><span>{{item.name}}</span>
           </div>
@@ -30,7 +32,7 @@
                 </div>
                 <div class="price">
                   <span class="nowprice"><span class="oldprice">￥</span>{{good.price}}</span><span
-                    v-show="good.oldPrice" class="oldprice">￥{{good.oldPrice}}</span>
+                    v-show="good.oldPrice" class="oldprice">{{good.oldPrice | currency '￥' 0}}</span>
                 </div>
               </div>
             </li>
@@ -38,11 +40,14 @@
         </li>
       </ul>
     </div>
+    <!--购物车-->
+    <shopcart></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
+  import shopcart from 'components/shopcart/shopcart.vue';
   // 请求成功
   const ERR_OK = 0;
 
@@ -51,6 +56,9 @@
       seller: {
         type: Object
       }
+    },
+    components: {
+      'shopcart': shopcart
     },
     data() {
       return {
@@ -119,6 +127,9 @@
       });
 
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+    },
+    ready() {
+      console.log(this.seller);
     }
   };
 </script>
