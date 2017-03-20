@@ -1,5 +1,4 @@
 <template>
-  {{seller.name}}
   <div class="goods">
     <!--左侧导航-->
     <div class="menu-wrap" v-el:menu-wrap>
@@ -41,7 +40,7 @@
       </ul>
     </div>
     <!--购物车-->
-    <shopcart></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -118,7 +117,6 @@
         response = response.body;
         if (response.errno === ERR_OK) {
           this.goods = response.data;
-          console.log(this.goods);
           this.$nextTick(() => {
             this._initScroll();
             this._calculateHeight();
