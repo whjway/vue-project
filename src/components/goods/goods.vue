@@ -33,6 +33,9 @@
                   <span class="nowprice"><span class="oldprice">￥</span>{{good.price}}</span><span
                     v-show="good.oldPrice" class="oldprice">{{good.oldPrice | currency '￥' 0}}</span>
                 </div>
+                <div class="cartcontrol-wrap">
+                  <cartcontrol :food="good" ></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
@@ -40,13 +43,14 @@
       </ul>
     </div>
     <!--购物车-->
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-foods="selectFoods"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
-  import shopcart from 'components/shopcart/shopcart.vue';
+  import shopcart from 'components/shopcart/shopcart';
+  import cartcontrol from 'components/cartcontrol/cartcontrol';
   // 请求成功
   const ERR_OK = 0;
 
@@ -57,7 +61,8 @@
       }
     },
     components: {
-      'shopcart': shopcart
+      shopcart,
+      cartcontrol
     },
     data() {
       return {
@@ -76,6 +81,17 @@
           }
         }
         return 0;
+      },
+      selectFoods() {
+        let foods = [];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     methods: {
@@ -94,7 +110,8 @@
           click: true
         });
         this.foodsScroll = new BScroll(this.$els.foodsWrap, {
-          probeType: 3
+          probeType: 3,
+          click: true
         });
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
@@ -127,7 +144,6 @@
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
     },
     ready() {
-      console.log(this.seller);
     }
   };
 </script>
@@ -237,4 +253,8 @@
               text-decoration: line-through
               font-size: 10px
               color: rgb(147, 153, 159)
+          .cartcontrol-wrap
+            position: absolute
+            right: 0
+            bottom: 12px
 </style>
