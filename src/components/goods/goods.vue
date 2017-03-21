@@ -34,7 +34,7 @@
                     v-show="good.oldPrice" class="oldprice">{{good.oldPrice | currency '￥' 0}}</span>
                 </div>
                 <div class="cartcontrol-wrap">
-                  <cartcontrol :food="good" ></cartcontrol>
+                  <cartcontrol :food="good"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -43,7 +43,8 @@
       </ul>
     </div>
     <!--购物车-->
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :select-foods="selectFoods"></shopcart>
+    <shopcart v-ref:shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"
+              :select-foods="selectFoods"></shopcart>
   </div>
 </template>
 
@@ -63,6 +64,13 @@
     components: {
       shopcart,
       cartcontrol
+    },
+    events: {
+      // 接受cartcontrol派发的DOM
+      'cart.add'(target) {
+        // 调用自己的方法->获取子组件->调用子组件对应方法
+        this._drop(target);
+      }
     },
     data() {
       return {
@@ -127,6 +135,14 @@
           height += food.clientHeight;
           this.listHeight.push(height);
         }
+      },
+      // 调用子组件方法 计算小球初始位置
+      _drop(target) {
+        // 体验优化，异步执行下落动画
+        this.$nextTick(() => {
+          // 获取子组件->调用子组件对应方法
+          this.$refs.shopcart.drop(target);
+        });
       }
     },
     created() {
